@@ -29,6 +29,19 @@ body {
     transition-duration: 0.2s;
 }
 
+/* TITEL */
+.dashboard-title {
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+    margin-top: 200px;
+    margin-bottom: 5px; /* Minskat avstånd */
+    background-image: linear-gradient(to right, #be7118d2, #a86f42); /* Gradient från rosa till orange */
+    -webkit-background-clip: text; /* Klipper bakgrundsbilden till texten */
+    color: transparent; /* Gör texten transparent så att gradienten syns */
+}
+
+
 /* TABELLRELATERAT */
 .table-container {
     display: flex;
@@ -37,6 +50,7 @@ body {
     flex-wrap: wrap;
     margin: auto;
     font-family: Nunito, sans-serif;
+    margin-top: 30px;
 }
 
 table {

@@ -138,15 +138,19 @@ document.getElementById("link-url").addEventListener("keypress", function(event)
 });
 
 // TABELL 2: VÄDER
-// Hämta element för knappen och modalen
 const changeCityButton = document.getElementById("change-city-btn");
 const cityModal = document.getElementById("city-modal");
 const saveCityButton = document.getElementById("save-city");
 const cancelCityButton = document.getElementById("cancel-city");
 const newCityInput = document.getElementById("new-city");
-const currentCityElement = document.getElementById("current-city"); // Element för att visa nuvarande stad
+const currentCityElement = document.getElementById("current-city");
 
 let currentCity = "Stockholm"; // Standardstad
+
+// Visa den aktuella staden när sidan laddas
+function updateCurrentCityDisplay(city) {
+    currentCityElement.innerHTML = "Nuvarande stad:<br><strong>" + city + "</strong>";
+}
 
 // Funktion för att visa modalen för att byta stad
 changeCityButton.addEventListener("click", function() {
@@ -165,6 +169,7 @@ saveCityButton.addEventListener("click", function() {
     const city = newCityInput.value.trim();
     if (city) {
         currentCity = city; // Uppdatera den aktuella staden
+        updateCurrentCityDisplay(city); // Uppdatera staden som visas
         loadWeather(city); // Ladda vädret för den nya staden
         cityModal.style.display = "none"; // Stäng modalen
         newCityInput.value = ""; // Töm inmatningsfältet
@@ -187,14 +192,61 @@ window.addEventListener("click", function(event) {
     }
 });
 
-// Tabellens väderfunktioner med möjlighet att byta stad
-async function loadWeather(city = "Stockholm") {
+// Funktion för att hämta användarens nuvarande plats
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showWeatherForLocation, handleLocationError);
+    } else {
+        alert("Geolokalisering stöds inte av denna webbläsare.");
+        loadWeather(currentCity); // Ladda vädret för den sparade staden om geolokalisering inte fungerar
+    }
+}
+
+// Funktion som körs om positionen hämtas korrekt
+function showWeatherForLocation(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    // Hämta vädret baserat på lat/lon
+    loadWeather(lat, lon); // Vi laddar vädret för latitud och longitud direkt här
+
+    // Uppdatera aktuell stad med baserat på geolokalisering
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=bd5e378503939ddaee76f12ad7a97608`)
+        .then(response => response.json())
+        .then(data => {
+            currentCity = data.name; // Uppdatera den aktuella staden med platsen som hämtades
+            updateCurrentCityDisplay(currentCity); // Visa den nya staden
+        })
+        .catch(error => {
+            console.error("Fel vid hämtning av stadens namn:", error);
+            updateCurrentCityDisplay("Okänd stad"); // Sätt till okänd stad om fel
+        });
+}
+
+// Funktion som körs om ett fel uppstår vid hämtning av plats
+function handleLocationError(error) {
+    console.error("Fel vid hämtning av plats:", error);
+    alert("Det gick inte att hämta din plats. Vädret för Stockholm visas istället.");
+    updateCurrentCityDisplay("Stockholm"); // Visa Stockholm som aktuell stad
+}
+
+// Funktion för att ladda väderdata baserat på latitud och longitud
+async function loadWeather(latOrCity, lon = null) {
     const weatherTableBody = document.querySelector(".table-container table:nth-child(2) tbody");
     weatherTableBody.innerHTML = ''; // Rensa tidigare väderprognoser innan ny data läggs till
 
+    let url = '';
+    if (lon) {
+        // Om latitud och longitud skickas
+        url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latOrCity}&lon=${lon}&units=metric&appid=bd5e378503939ddaee76f12ad7a97608`;
+    } else {
+        // Om bara en stad skickas
+        url = `https://api.openweathermap.org/data/2.5/forecast?q=${latOrCity}&units=metric&appid=bd5e378503939ddaee76f12ad7a97608`;
+    }
+
     try {
-        // Hämta väderdata baserat på användarens angivna stad
-        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=bd5e378503939ddaee76f12ad7a97608`);
+        // Hämta väderdata
+        let response = await fetch(url);
         let data = await response.json();
 
         // Veckodagsnamn på svenska
@@ -218,7 +270,7 @@ async function loadWeather(city = "Stockholm") {
             let icon = `http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`;
 
             let row = document.createElement("tr");
-            row.innerHTML = `
+            row.innerHTML = ` 
                 <td>
                     <div class="weather-row">
                         <img src="${icon}" alt="väder">
@@ -235,6 +287,9 @@ async function loadWeather(city = "Stockholm") {
         console.error("Kunde inte hämta vädret", error);
     }
 }
+
+// När sidan laddas, försök hämta vädret för användarens nuvarande position eller använd standardstad
+getUserLocation();
 
 
 // TABELL 3:
