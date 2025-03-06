@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap">
+    
+    <!-- Extern CSS -->
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+    <!-- Klocka -->
+    <div id="clock"></div>
+
+    <!-- Huvudcontainer för tabeller -->
+    <div class="table-container">
+        <!-- TABELL 1: SNABBLÄNKAR -->
+        <table id="quick-links">
+            <thead>
+                <tr><th>Snabblänkar</th></tr>
+            </thead>
+            <tbody id="links-container">
+                <tr><td></td></tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><button id="add-link-button">Lägg till länk</button></td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <!-- TABELL 2: VÄDER -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Dagens väder 
+                        <button id="change-city-btn" class="three-dots-btn">...</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <!-- TABELL 3: ANNAN DATA -->
+        <table>
+            <thead>
+                <tr><th>Övrig data</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Data</td></tr>
+            </tbody>
+        </table>
+        
+        <!-- TABELL 4: ANTECKNINGAR -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Anteckningar 
+                        <button id="change-notes-btn" class="three-dots-btn">...</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <textarea id="noteInput" placeholder="Skriv dina anteckningar här..." oninput="saveNote()"></textarea>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Overlay för att dölja bakgrund vid modaler -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Modal: Lägg till länk -->
+    <div id="link-modal" class="modal">
+        <div class="modal-content">
+            <h3>Lägg till länk</h3>
+            <label for="link-name">Namn:</label>
+            <input type="text" id="link-name" placeholder="Ange namn..." required>
+            <label for="link-url">URL:</label>
+            <input type="url" id="link-url" placeholder="https://example.com" required>
+            <button id="save-link">Spara</button>
+            <button id="cancel-link">Avbryt</button>
+        </div>
+    </div>
+
+    <!-- Modal: Byt stad -->
+    <div id="city-modal" class="modal">
+        <div class="modal-content">
+            <h3>Byt stad</h3>
+            <p id="current-city">Nuvarande stad: Stockholm</p>
+            <input type="text" id="new-city" placeholder="Ange stad">
+            <button id="save-city">Spara</button>
+            <button id="cancel-city">Avbryt</button>
+        </div>
+    </div>
+
+    <!-- Modal: Visa anteckningar -->
+    <div id="notes-modal" class="modal">
+        <div class="modal-content">
+            <h3>Sparade anteckningar</h3>
+            <ul id="notes-list"></ul>
+            <button id="close-notes-modal">Stäng</button>
+        </div>
+    </div>
+
+    <!-- Knapp för att slumpa bakgrund -->
+    <button class="bottom-button" onclick="changeBackground()">Slumpa ny bakgrund</button>
+
+    <!-- Extern JavaScript-fil -->
+    <script src="js.js"></script>
+</body>
+</html>
