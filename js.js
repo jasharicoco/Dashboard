@@ -179,6 +179,7 @@ let currentCity = "Stockholm"; // Standardstad
 // Visa den aktuella staden när sidan laddas
 function updateCurrentCityDisplay(city) {
     currentCityElement.innerHTML = "Nuvarande stad:<br><strong>" + city + "</strong>";
+
 }
 
 // Funktion för att visa modalen för att byta stad
@@ -257,6 +258,8 @@ function handleLocationError(error) {
     console.error("Fel vid hämtning av plats:", error);
     alert("Det gick inte att hämta din plats. Vädret för Stockholm visas istället.");
     updateCurrentCityDisplay("Stockholm"); // Visa Stockholm som aktuell stad
+    currentCity = "Stockholm";
+    loadWeather("Stockholm"); // Ladda vädret för den nya staden
 }
 
 // Funktion för att ladda väderdata baserat på latitud och longitud
