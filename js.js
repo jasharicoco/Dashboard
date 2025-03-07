@@ -353,18 +353,16 @@ getUserLocation();
 
 // TABELL 4: ANTECKNINGAR
 document.addEventListener("DOMContentLoaded", function() {
-    // Koppla eventlyssnare till knappen för att öppna modal
     document.getElementById("change-notes-btn").addEventListener("click", openNotesModal);
     document.getElementById("close-notes-modal").addEventListener("click", closeNotesModal);
-
+    document.getElementById("noteInput").addEventListener("keydown", saveNote);
     loadNotes();
 });
 
-// Funktion för att öppna modal och visa sparade anteckningar
 function openNotesModal() {
     const modal = document.getElementById("notes-modal");
     const notesList = document.getElementById("notes-list");
-    notesList.innerHTML = ''; // Rensa listan innan vi lägger till nya anteckningar
+    notesList.innerHTML = '';
 
     const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
 
@@ -372,7 +370,6 @@ function openNotesModal() {
         let listItem = document.createElement("li");
         listItem.textContent = note;
         
-        // Skapa en borttagningsknapp för varje anteckning
         let deleteButton = document.createElement("button");
         deleteButton.textContent = "x";
         deleteButton.classList.add("delete-note");
@@ -384,62 +381,64 @@ function openNotesModal() {
         notesList.appendChild(listItem);
     });
 
-    modal.style.display = "block";  // Visa modalen
+    modal.style.display = "block";
 }
 
-// Funktion för att stänga modal
 function closeNotesModal() {
-    document.getElementById("notes-modal").style.display = "none"; // Stäng modalen
+    document.getElementById("notes-modal").style.display = "none";
 }
 
-// Funktion för att ta bort en anteckning från både UI och localStorage
 function removeNote(index) {
     let notes = JSON.parse(localStorage.getItem("notes")) || [];
-    notes.splice(index, 1);  // Ta bort anteckningen från arrayen
+    notes.splice(index, 1);
     localStorage.setItem("notes", JSON.stringify(notes));
-
-    // Uppdatera modalen för att visa de senaste anteckningarna
     openNotesModal();
 }
 
-// Funktion för att spara anteckningar till localStorage
 function saveNote(event) {
-    const noteInput = document.getElementById("noteInput");
-
-    // Kontrollera om det är Enter-tangenten som trycks
     if (event.key === "Enter") {
-        event.preventDefault();  // Förhindra att en ny rad skapas i textområdet
-
+        event.preventDefault();
+        const noteInput = document.getElementById("noteInput");
         let notes = JSON.parse(localStorage.getItem("notes")) || [];
         const newNote = noteInput.value.trim();
 
         if (newNote && !notes.includes(newNote)) {
-            notes.push(newNote);  // Lägg till anteckningen om den inte redan finns
+            notes.push(newNote);
             localStorage.setItem("notes", JSON.stringify(notes));
-
-            noteInput.value = '';  // Nollställ textområdet efter sparing
+            noteInput.value = '';
         }
     }
 }
 
-// Lägg till eventlyssnare på textområdet
-document.getElementById("noteInput").addEventListener("keypress", saveNote);
-
-// Funktion för att ladda sparade anteckningar när sidan laddas
 function loadNotes() {
     const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
     const noteInput = document.getElementById("noteInput");
+    const notesList = document.getElementById("notes-list");
+    notesList.innerHTML = '';
 
-    // Om det finns sparade anteckningar, fyll textområdet med den senaste anteckningen
     if (savedNotes.length > 0) {
         noteInput.value = savedNotes[savedNotes.length - 1];
     }
+
+    savedNotes.forEach((note, index) => {
+        let listItem = document.createElement("li");
+        listItem.textContent = note;
+        
+        let deleteButton = document.createElement("button");
+        deleteButton.textContent = "x";
+        deleteButton.classList.add("delete-note");
+        deleteButton.onclick = function() {
+            removeNote(index);
+        };
+
+        listItem.appendChild(deleteButton);
+        notesList.appendChild(listItem);
+    });
 }
 
-// Lägg till eventlyssnare för att stänga modal vid Escape
 window.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
-        closeNotesModal();  // Stänger modal om Escape trycks
+        closeNotesModal();
     }
 });
 

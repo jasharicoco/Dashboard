@@ -192,14 +192,14 @@ td {
     font-weight: bold;
     padding: 8px 15px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     background: rgb(255, 255, 255);
     opacity: 0.8;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
     width: 100%;
     text-align: center;
 }
@@ -283,20 +283,20 @@ textarea:focus {
 }
 
 #notes-list li button {
-    padding: 0;  /* Ta bort padding för att få en exakt storlek */
-    cursor: pointer;
+    padding: 0;
+    /*Tabortpaddingförattfåenexaktstorlek*/cursor: pointer;
     background-color: #f0f0f0;
-
-    /* Fast storlek för knappen */
-    width: 20px;   /* Fast bredd */
-    height: 20px;  /* Fast höjd */
-    border-radius: 0;  /* Ingen rundning på hörnen */
-
-    /* Fixera knappen till höger */
-    position: absolute;
+    /*Faststorlekförknappen*/width: 20px;
+    /*Fastbredd*/height: 20px;
+    /*Fasthöjd*/border-radius: 0;
+    /*Ingenrundningpåhörnen*//*Fixeraknappentillhöger*/position: absolute;
     right: 10px;
     color: grey;
     cursor: pointer;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
 }
 #notes-list li button:hover {
     background-color: #d8d8d8;
