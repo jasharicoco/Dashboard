@@ -49,7 +49,6 @@ dashboardTitle.addEventListener("keydown", function(event) {
     }
 });
 
-
 // TABELL 1: SNABBLÄNKAR
 document.getElementById("add-link-button").addEventListener("click", showModal);
 document.getElementById("save-link").addEventListener("click", saveLink);
@@ -106,7 +105,7 @@ function addLink(name, url) {
 
     const linkIcon = document.createElement("img");
     linkIcon.classList.add("link-icon");
-    linkIcon.src = `https://www.google.com/s2/favicons?domain=${url}`; // Dynamisk ikon från URL
+    linkIcon.src = `https://www.google.com/s2/favicons?domain=${url}`;// Dynamisk ikon från URL
 
     const linkName = document.createElement("a");
     linkName.classList.add("link-name");
