@@ -1,9 +1,11 @@
+// KÖR VID UPPSTART
 document.addEventListener("DOMContentLoaded", function () {
     updateClock();
     loadWeather();
     loadLinks();
     loadNotes();
     setupEventListeners();
+    changeBackground();
 });
 
 // HEADER: KLOCKA
@@ -425,5 +427,35 @@ function loadNotes() {
     // Om det finns sparade anteckningar, fyll textområdet med den senaste anteckningen
     if (savedNotes.length > 0) {
         noteInput.value = savedNotes[savedNotes.length - 1];
+    }
+}
+
+// FOOTER
+// Funktion för att byta bakgrundsbild från Unsplash API med Fetch API
+async function changeBackground() {
+    const apiKey = 'E_1NnPtK1MqmSsNsI_z8Eb_5Gcpbu418ocfgWV1yvsw';
+    const apiUrl = `https://api.unsplash.com/collections/1913171/photos?client_id=${apiKey}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`HTTP-fel! Status: ${response.status}`);
+
+        const data = await response.json();
+        
+        // ✅ Välj en slumpmässig bild från samlingen
+        const randomImage = data[Math.floor(Math.random() * data.length)];
+
+        if (!randomImage || !randomImage.urls) {
+            throw new Error("Ingen giltig bild hittades.");
+        }
+
+        const newBackgroundUrl = randomImage.urls.regular;
+        document.body.style.backgroundImage = `url(${newBackgroundUrl})`;
+
+        // Spara bakgrund i localStorage
+        localStorage.setItem('background', `url(${newBackgroundUrl})`);
+
+    } catch (error) {
+        console.error('Fel vid hämtning av bakgrundsbild:', error);
     }
 }

@@ -4,6 +4,10 @@
 
 body {
     background: linear-gradient(to right, rgba(180, 26, 26, 0.493), orange);
+    background-size: cover;        /* Se till att bilden täcker hela skärmen */
+    background-position: center;   /* Centrera bilden */
+    background-repeat: no-repeat;  /* Förhindra upprepning */
+    transition: background-image 0.5s ease-in-out;
     margin: 0;
     padding: 0;
     display: flex;
@@ -34,7 +38,7 @@ body {
     text-align: center;
     font-size: 3em;
     font-weight: bold;
-    margin-top: 200px;
+    margin-top: 150px;
     margin-bottom: 5px;
     background-image: linear-gradient(to right, #be7118d2, #a86f42); /* Gradient från rosa till orange */
     -webkit-background-clip: text; /* Klipper bakgrundsbilden till texten */
