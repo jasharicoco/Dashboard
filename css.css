@@ -5,7 +5,7 @@
 body {
     background: linear-gradient(to right, rgba(180, 26, 26, 0.493), orange);
     background-size: cover;        /* Se till att bakgrunden täcker hela skärmen */
-    background-position: center;   /* Centrera bilden */
+    background-position: center center;   /* Centrera bilden */
     background-repeat: no-repeat;  /* Förhindra upprepning */
     background-attachment: fixed;  /* Fäst bakgrunden på skärmen så den inte rullar med innehållet */
     transition: background-image 0.5s ease-in-out;
@@ -16,6 +16,7 @@ body {
     align-items: center;
     min-height: 100vh;             /* Gör så att body alltid är minst lika hög som skärmen */
     margin-bottom: 60px;
+    height: 100%;  /* Säkerställer att bakgrunden täcker hela sidan */
 }
 
 /* KLOCKRELATERAT */

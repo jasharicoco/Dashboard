@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
     changeBackground();
 });
 
+
+
 // HEADER: KLOCKA
 function updateClock() {
     const now = new Date();
@@ -31,6 +33,7 @@ window.addEventListener("scroll", function () {
         clock.style.opacity = "0.8";
     }
 });
+
 
 
 // DASHBOARD TITLE
@@ -60,6 +63,8 @@ dashboardTitle.addEventListener("keydown", function(event) {
         dashboardTitle.blur(); // Gör så att redigeringen avslutas när Enter trycks
     }
 });
+
+
 
 // TABELL 1: SNABBLÄNKAR
 document.getElementById("add-link-button").addEventListener("click", showModal);
@@ -178,6 +183,8 @@ document.getElementById("link-url").addEventListener("keypress", function(event)
         saveLink(); // Spara länken
     }
 });
+
+
 
 // TABELL 2: VÄDER
 const changeCityButton = document.getElementById("change-city-btn");
@@ -337,7 +344,10 @@ async function loadWeather(latOrCity, lon = null) {
 getUserLocation();
 
 
+
 // TABELL 3:
+
+
 
 // TABELL 4: ANTECKNINGAR
 document.addEventListener("DOMContentLoaded", function() {
@@ -475,8 +485,8 @@ async function changeBackground() {
 window.addEventListener("scroll", function () {
     let button = document.querySelector(".bottom-button");
 
-    // Kontrollera om användaren är längst ner på sidan
-    let isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
+// Kontrollera om användaren är nära botten på sidan
+let isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
 
     if (isAtBottom) {
         button.style.opacity = "0.8";
