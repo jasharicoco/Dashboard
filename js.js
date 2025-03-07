@@ -1,10 +1,8 @@
 // KÖR VID UPPSTART
 document.addEventListener("DOMContentLoaded", function () {
     updateClock();
-    loadWeather();
     loadLinks();
     loadNotes();
-    setupEventListeners();
     changeBackground();
 });
 
@@ -122,7 +120,10 @@ function addLink(name, url) {
 
     const linkIcon = document.createElement("img");
     linkIcon.classList.add("link-icon");
-    linkIcon.src = `https://www.google.com/s2/favicons?domain=${url}`;// Dynamisk ikon från URL
+    linkIcon.src = `https://www.google.com/s2/favicons?domain=${url}`; // Dynamisk ikon från URL
+    linkIcon.onerror = function() {
+        linkIcon.src = './default-icon.png'; // Standardikon om den dynamiska ikonen inte kan hämtas
+    };
 
     const linkName = document.createElement("a");
     linkName.classList.add("link-name");
@@ -142,6 +143,7 @@ function addLink(name, url) {
     linkItem.appendChild(removeButton);
     linksContainer.appendChild(linkItem);
 }
+
 
 function removeLink(linkElement, name, url) {
     linkElement.remove();
@@ -319,7 +321,7 @@ async function loadWeather(latOrCity, lon = null) {
         // Lägg till väderrader i tabellen
         for (let i = 0; i < 5; i++) {
             let weather = data.list[i * 8];  // Få väderprognos för varje dag
-            let icon = `http://openweathermap.org/img/wn/${weather.weather[0].icon}.png`;
+            let icon = `https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`;
 
             let row = document.createElement("tr");
             row.innerHTML = ` 
@@ -354,22 +356,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Koppla eventlyssnare till knappen för att öppna modal
     document.getElementById("change-notes-btn").addEventListener("click", openNotesModal);
     document.getElementById("close-notes-modal").addEventListener("click", closeNotesModal);
-    
-    // Lägg till eventlyssnare för att stänga modal vid Escape eller klick utanför modalen
-    window.addEventListener("keydown", function(event) {
-        if (event.key === "Escape") {
-            closeNotesModal();  // Stänger modal om Escape trycks
-        }
-    });
-
-    window.addEventListener('click', function (event) {
-        const modal = document.getElementById('notes-modal');
-        
-        // Kontrollera om klicket var utanför modalen och inte på borttagningsknappen
-        if (!modal.contains(event.target) && !Array.from(removeButtons).includes(event.target)) {
-            closeNotesModal(); // Stäng modalen om användaren klickar utanför den och inte på en borttagningsknapp
-        }
-    });
 
     loadNotes();
 });
@@ -439,7 +425,6 @@ function saveNote(event) {
 // Lägg till eventlyssnare på textområdet
 document.getElementById("noteInput").addEventListener("keypress", saveNote);
 
-
 // Funktion för att ladda sparade anteckningar när sidan laddas
 function loadNotes() {
     const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
@@ -450,6 +435,15 @@ function loadNotes() {
         noteInput.value = savedNotes[savedNotes.length - 1];
     }
 }
+
+// Lägg till eventlyssnare för att stänga modal vid Escape
+window.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        closeNotesModal();  // Stänger modal om Escape trycks
+    }
+});
+
+
 
 // FOOTER
 // Funktion för att byta bakgrundsbild från Unsplash API med Fetch API
