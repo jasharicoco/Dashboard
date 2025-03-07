@@ -21,6 +21,18 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+// När man börjar scrolla ner i sidan så minskar opaciteten på headern
+window.addEventListener("scroll", function () {
+    let clock = document.getElementById("clock");
+
+    if (window.scrollY > 0) {
+        clock.style.opacity = "0.3";
+    } else {
+        clock.style.opacity = "0.8";
+    }
+});
+
+
 // DASHBOARD TITLE
 // Hämta element för titeln
 const dashboardTitle = document.getElementById("dashboard-title");
@@ -458,3 +470,17 @@ async function changeBackground() {
         console.error('Fel vid hämtning av bakgrundsbild:', error);
     }
 }
+
+// Ändra opacity till 0.3 så länge man ej är längst ner på sidan
+window.addEventListener("scroll", function () {
+    let button = document.querySelector(".bottom-button");
+
+    // Kontrollera om användaren är längst ner på sidan
+    let isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
+
+    if (isAtBottom) {
+        button.style.opacity = "0.8";
+    } else {
+        button.style.opacity = "0.3";
+    }
+});

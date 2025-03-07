@@ -28,6 +28,7 @@ body {
     background: rgb(255, 255, 255);
     opacity: 0.8;
     border-radius: 10px;
+    transition: opacity 0.3s ease-in-out;
 }
 
 #clock:hover {
@@ -315,6 +316,7 @@ textarea:focus {
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    transition: opacity 0.3s ease-in-out;
 }
 
 /* Stil för knappen med tre prickar */
