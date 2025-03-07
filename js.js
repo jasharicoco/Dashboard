@@ -23,12 +23,20 @@ updateClock();
 // Hämta element för titeln
 const dashboardTitle = document.getElementById("dashboard-title");
 
+// Kontrollera om en tidigare titel finns sparad i localStorage och använd den
+const savedTitle = localStorage.getItem("dashboardTitle");
+if (savedTitle) {
+    dashboardTitle.textContent = savedTitle; // Sätt den sparade titeln
+}
+
 // Funktion för att hantera ändring av titel
 dashboardTitle.addEventListener("blur", function() {
-    // När användaren lämnar (blur) rubriken, kan vi här hantera det nya värdet
     const newTitle = dashboardTitle.textContent.trim();
-    if (!newTitle) {
+    if (newTitle) {
+        localStorage.setItem("dashboardTitle", newTitle); // Spara den nya titeln
+    } else {
         dashboardTitle.textContent = "ZIGGIS DASHBOARD"; // Sätt tillbaka standardtitel om den är tom
+        localStorage.setItem("dashboardTitle", "ZIGGIS DASHBOARD"); // Spara standardtiteln
     }
 });
 
@@ -38,6 +46,7 @@ dashboardTitle.addEventListener("keydown", function(event) {
         dashboardTitle.blur(); // Gör så att redigeringen avslutas när Enter trycks
     }
 });
+
 
 // TABELL 1: SNABBLÄNKAR
 document.getElementById("add-link-button").addEventListener("click", showModal);
