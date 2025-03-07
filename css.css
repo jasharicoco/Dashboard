@@ -35,11 +35,14 @@ body {
     font-size: 3em;
     font-weight: bold;
     margin-top: 200px;
-    margin-bottom: 5px; /* Minskat avstånd */
+    margin-bottom: 5px;
     background-image: linear-gradient(to right, #be7118d2, #a86f42); /* Gradient från rosa till orange */
     -webkit-background-clip: text; /* Klipper bakgrundsbilden till texten */
     color: transparent; /* Gör texten transparent så att gradienten syns */
+    outline: none; /* Ta bort standard outline när man klickar på titeln */
+    padding: 0; /* Ta bort eventuella marginaler */
 }
+
 
 
 /* TABELLRELATERAT */

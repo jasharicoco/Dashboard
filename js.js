@@ -19,6 +19,26 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+// DASHBOARD TITLE
+// Hämta element för titeln
+const dashboardTitle = document.getElementById("dashboard-title");
+
+// Funktion för att hantera ändring av titel
+dashboardTitle.addEventListener("blur", function() {
+    // När användaren lämnar (blur) rubriken, kan vi här hantera det nya värdet
+    const newTitle = dashboardTitle.textContent.trim();
+    if (!newTitle) {
+        dashboardTitle.textContent = "ZIGGIS DASHBOARD"; // Sätt tillbaka standardtitel om den är tom
+    }
+});
+
+// Eventuellt kan du även lyssna på "Enter"-tangenten om du vill göra något extra vid ändringen
+dashboardTitle.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        dashboardTitle.blur(); // Gör så att redigeringen avslutas när Enter trycks
+    }
+});
+
 // TABELL 1: SNABBLÄNKAR
 document.getElementById("add-link-button").addEventListener("click", showModal);
 document.getElementById("save-link").addEventListener("click", saveLink);
