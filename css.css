@@ -63,14 +63,10 @@ body {
 }
 
 /* TABELLRELATERAT */
-.table-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: auto;
-    font-family: Nunito, sans-serif;
-    margin-top: 30px;
+/* För att indikera att tabellen är "i dragning" */
+table[draggable="true"]:active {
+    opacity: 0.7;
+    cursor: move;
 }
 
 table {
@@ -81,6 +77,25 @@ table {
     opacity: 0.8;
     border-radius: 10px;
     overflow: hidden;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: auto;
+    font-family: Nunito, sans-serif;
+    margin-top: 30px;
+    min-height: 500px;
+    min-height: 500px; /* Se till att denna höjd är tillräcklig för att förhindra en kort container */
+    padding: 20px; /* Lägg till padding för att ge mer utrymme */
+    box-sizing: border-box; /* Se till att padding inte påverkar bredden */
+}
+
+.table-container:hover {
+    border: 2px dashed #ccc; /* Visar en indikering av släppområdet */
+    border: none;  /* Ta bort streckade linjer när man hovrar */
 }
 
 th {
@@ -149,6 +164,7 @@ td {
 /* Modal-styling */
 .modal {
     font-size: 14px;
+    width: 200px;
     display: none;
     position: fixed;
     top: 50%;

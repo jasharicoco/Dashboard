@@ -487,3 +487,44 @@ let isAtBottom = window.innerHeight + window.scrollY >= document.documentElement
         button.style.opacity = "0.3";
     }
 });
+
+
+
+// FLYTTA TABELLER
+// Hämta alla tabeller
+const tables = document.querySelectorAll('table[draggable="true"]');
+const container = document.querySelector('.table-container');
+
+// Lägg till eventlyssnare för varje tabell
+tables.forEach(table => {
+    table.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', table.id); // Skicka med id på den dragna tabellen
+    });
+
+    table.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Nödvändigt för att släppet ska fungera
+    });
+
+    table.addEventListener('drop', (e) => {
+        e.preventDefault();
+
+        // Hämta ID för tabellerna
+        const draggedId = e.dataTransfer.getData('text/plain');
+        const draggedTable = document.getElementById(draggedId);
+
+        // Bestäm vilken tabell som är släpplig
+        const targetTable = e.target.closest('table');
+
+        // Byt plats på tabellerna
+        if (draggedTable !== targetTable) {
+            const draggedIndex = Array.from(container.children).indexOf(draggedTable);
+            const targetIndex = Array.from(container.children).indexOf(targetTable);
+            
+            if (draggedIndex < targetIndex) {
+                container.insertBefore(draggedTable, targetTable.nextSibling);
+            } else {
+                container.insertBefore(draggedTable, targetTable);
+            }
+        }
+    });
+});
