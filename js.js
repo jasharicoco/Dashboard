@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateClock();
     loadLinks();
     loadNotes();
-    //changeBackground();
+    changeBackground();
 });
 
 
