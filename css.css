@@ -301,6 +301,7 @@ textarea:focus {
 #notes-list {
     list-style-type: none;
     padding: 0;
+    margin-top: 10px; /* Adds space before the list */
 }
 
 #notes-list li {
