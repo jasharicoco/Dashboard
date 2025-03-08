@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateClock();
     loadLinks();
     loadNotes();
-    //changeBackground();
+    changeBackground();
 });
 
 
@@ -85,6 +85,7 @@ document.addEventListener('click', function(event) {
 
 const linksContainer = document.querySelector("#links-container td");
 
+// Funktion för att visa modalen
 function showLinkModal() {
     document.getElementById("link-modal").classList.add("active");  // Lägg till aktiv klass för att visa modal
     document.getElementById("overlay").style.display = "block"; // Visa overlay
@@ -106,11 +107,20 @@ function saveLink() {
         return;
     }
 
-    addLink(name, url);
+    if (currentLinkItem) {
+        // Om vi har en länk att uppdatera
+        updateLink(currentLinkItem, name, url);
+    } else {
+        // Annars lägg till en ny länk
+        addLink(name, url);
+    }
     saveToLocalStorage(name, url);
     closeLinkModal();
 }
 
+let currentLinkItem = null; // Håller reda på vilken länk som redigeras
+
+// Funktion för att lägga till en länk
 function addLink(name, url) {
     if (linksContainer.textContent.trim() === "Data") {
         linksContainer.textContent = "";
@@ -118,6 +128,13 @@ function addLink(name, url) {
 
     const linkItem = document.createElement("div");
     linkItem.classList.add("link-item");
+    linkItem.setAttribute("draggable", "true"); // Gör länkbar dragbar
+
+    // Lägg till eventlyssnare för drag-and-drop
+    linkItem.addEventListener("dragstart", handleDragStart);
+    linkItem.addEventListener("dragover", handleDragOver);
+    linkItem.addEventListener("drop", handleDrop);
+    linkItem.addEventListener("dragend", handleDragEnd);
 
     const linkIcon = document.createElement("img");
     linkIcon.classList.add("link-icon");
@@ -139,10 +156,49 @@ function addLink(name, url) {
         removeLink(linkItem, name, url);
     };
 
+    // Lägg till en eventlyssnare för högerklick (kontextmeny)
+    linkItem.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+        currentLinkItem = linkItem; // Sätt den aktuella länkobjektet
+        showLinkModal();
+        document.getElementById("link-name").value = name; // Fyll i namn i modal
+        document.getElementById("link-url").value = url;  // Fyll i URL i modal
+    });
+
     linkItem.appendChild(linkIcon);
     linkItem.appendChild(linkName);
     linkItem.appendChild(removeButton);
     linksContainer.appendChild(linkItem);
+}
+
+function handleDragStart(event) {
+    // Sätt data om länken som dras
+    event.dataTransfer.setData("text/plain", event.target.innerHTML);
+    event.target.classList.add("dragging");
+}
+
+function handleDragOver(event) {
+    event.preventDefault(); // Tillåt drop
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    const draggedData = event.dataTransfer.getData("text/plain");
+    const draggedElement = document.createElement("div");
+    draggedElement.innerHTML = draggedData;
+
+    // Byt plats på länkarna
+    const target = event.target.closest(".link-item");
+    const targetHTML = target.innerHTML;
+    target.innerHTML = draggedElement.innerHTML;
+    draggedElement.innerHTML = targetHTML;
+    
+    // Uppdatera ordningen i localStorage
+    updateLinksOrder();
+}
+
+function handleDragEnd(event) {
+    event.target.classList.remove("dragging");
 }
 
 function removeLink(linkElement, name, url) {
@@ -171,20 +227,36 @@ function loadLinks() {
     links.forEach(link => addLink(link.name, link.url));
 }
 
-// Lägg till eventlyssnare för Enter-tangent på Name och URL inputfält
-document.getElementById("link-name").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault(); // Förhindra att form skickas
-        saveLink(); // Spara länken
-    }
-});
+function updateLinksOrder() {
+    let links = [];
+    const linkItems = document.querySelectorAll(".link-item");
+    linkItems.forEach(item => {
+        const name = item.querySelector(".link-name").textContent;
+        const url = item.querySelector(".link-name").href;
+        links.push({ name, url });
+    });
+    localStorage.setItem("quickLinks", JSON.stringify(links));
+}
 
-document.getElementById("link-url").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault(); // Förhindra att form skickas
-        saveLink(); // Spara länken
+// Funktion för att uppdatera en länk
+function updateLink(linkItem, newName, newUrl) {
+    linkItem.querySelector(".link-name").textContent = newName;
+    linkItem.querySelector(".link-name").href = newUrl;
+
+    // Uppdatera länken i localStorage
+    updateLinkInLocalStorage(linkItem.querySelector(".link-name").textContent, linkItem.querySelector(".link-name").href, newName, newUrl);
+}
+
+function updateLinkInLocalStorage(oldName, oldUrl, newName, newUrl) {
+    let links = JSON.parse(localStorage.getItem("quickLinks")) || [];
+    // Uppdatera den gamla länken med de nya värdena
+    const link = links.find(link => link.name === oldName && link.url === oldUrl);
+    if (link) {
+        link.name = newName;
+        link.url = newUrl;
+        localStorage.setItem("quickLinks", JSON.stringify(links));
     }
-});
+}
 
 
 
@@ -440,9 +512,7 @@ async function loadChannels() {
                                 <td>
                                 <div class="channel-row">
                                     <div class="channel-info-wrapper">
-                                        <a href="${channelUrl}" target="_blank">
                                             <img src="${channelImageUrl}" alt="${channelName}" class="channel-img" width="40">
-                                        </a>
                                         <div class="channel-info">
                                             <b><a href="${liveAudioUrl}" target="_blank">${channelName}</a></b><br>
                                             <span>${currentProgram}</span>
@@ -469,12 +539,6 @@ async function loadChannels() {
         console.error("Kunde inte hämta kanaler", error);
     }
 }
-
-
-
-
-
-
 
 
 

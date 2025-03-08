@@ -15,7 +15,7 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh; /* Gör så att body alltid är minst lika hög som skärmen */
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     height: 100%; /* Säkerställer att bakgrunden täcker hela sidan */
 }
 
