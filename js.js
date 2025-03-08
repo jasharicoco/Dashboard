@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateClock();
     loadLinks();
     loadNotes();
-    changeBackground();
+    //changeBackground();
 });
 
 
@@ -491,21 +491,23 @@ let isAtBottom = window.innerHeight + window.scrollY >= document.documentElement
 
 
 // FLYTTA TABELLER
-// Hämta alla tabeller
-const tables = document.querySelectorAll('table[draggable="true"]');
+// Hämta alla tabellrubriker
+const headers = document.querySelectorAll('th[draggable="true"]');
 const container = document.querySelector('.table-container');
 
-// Lägg till eventlyssnare för varje tabell
-tables.forEach(table => {
-    table.addEventListener('dragstart', (e) => {
+// Lägg till eventlyssnare för varje rubrik
+headers.forEach(header => {
+    header.addEventListener('dragstart', (e) => {
+        // Hämta den tabell som rubriken tillhör
+        const table = e.target.closest('table');
         e.dataTransfer.setData('text/plain', table.id); // Skicka med id på den dragna tabellen
     });
 
-    table.addEventListener('dragover', (e) => {
+    header.addEventListener('dragover', (e) => {
         e.preventDefault(); // Nödvändigt för att släppet ska fungera
     });
 
-    table.addEventListener('drop', (e) => {
+    header.addEventListener('drop', (e) => {
         e.preventDefault();
 
         // Hämta ID för tabellerna
@@ -513,7 +515,8 @@ tables.forEach(table => {
         const draggedTable = document.getElementById(draggedId);
 
         // Bestäm vilken tabell som är släpplig
-        const targetTable = e.target.closest('table');
+        const targetHeader = e.target;
+        const targetTable = targetHeader.closest('table');
 
         // Byt plats på tabellerna
         if (draggedTable !== targetTable) {

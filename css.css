@@ -4,19 +4,19 @@
 
 body {
     background: linear-gradient(to right, rgba(180, 26, 26, 0.493), orange);
-    background-size: cover;        /* Se till att bakgrunden täcker hela skärmen */
-    background-position: center center;   /* Centrera bilden */
-    background-repeat: no-repeat;  /* Förhindra upprepning */
-    background-attachment: fixed;  /* Fäst bakgrunden på skärmen så den inte rullar med innehållet */
+    background-size: cover; /* Se till att bakgrunden täcker hela skärmen */
+    background-position: center center; /* Centrera bilden */
+    background-repeat: no-repeat; /* Förhindra upprepning */
+    background-attachment: fixed; /* Fäst bakgrunden på skärmen så den inte rullar med innehållet */
     transition: background-image 0.5s ease-in-out;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;             /* Gör så att body alltid är minst lika hög som skärmen */
+    min-height: 100vh; /* Gör så att body alltid är minst lika hög som skärmen */
     margin-bottom: 60px;
-    height: 100%;  /* Säkerställer att bakgrunden täcker hela sidan */
+    height: 100%; /* Säkerställer att bakgrunden täcker hela sidan */
 }
 
 /* KLOCKRELATERAT */
@@ -45,7 +45,7 @@ body {
     font-weight: bold;
     margin-top: 150px;
     margin-bottom: 5px;
-    background-image: linear-gradient(to right, #be7118d2, #a86f42); /* Gradient från rosa till orange */
+    background-image: linear-gradient(to right, #be7118d2, #a86f42);
     -webkit-background-clip: text; /* Klipper bakgrundsbilden till texten */
     color: transparent; /* Gör texten transparent så att gradienten syns */
     outline: none; /* Ta bort standard outline när man klickar på titeln */
@@ -55,7 +55,7 @@ body {
     overflow-wrap: break-word; /* Fungerar för längre ord som inte får plats på en rad */
 }
 
-/* Media Query för skärmar mindre än 426px */
+/* Media Query för skärmar mindre än 846px */
 @media (max-width: 846px) {
     .dashboard-title {
         margin-top: 80px;
@@ -64,7 +64,7 @@ body {
 
 /* TABELLRELATERAT */
 /* För att indikera att tabellen är "i dragning" */
-table[draggable="true"]:active {
+th[draggable="true"]:active {
     opacity: 0.7;
     cursor: move;
 }
@@ -85,17 +85,8 @@ table {
     gap: 10px;
     flex-wrap: wrap;
     margin: auto;
-    font-family: Nunito, sans-serif;
     margin-top: 30px;
-    min-height: 500px;
-    min-height: 500px; /* Se till att denna höjd är tillräcklig för att förhindra en kort container */
-    padding: 20px; /* Lägg till padding för att ge mer utrymme */
-    box-sizing: border-box; /* Se till att padding inte påverkar bredden */
-}
-
-.table-container:hover {
-    border: 2px dashed #ccc; /* Visar en indikering av släppområdet */
-    border: none;  /* Ta bort streckade linjer när man hovrar */
+    padding: 20px;
 }
 
 th {
@@ -103,6 +94,11 @@ th {
     text-align: center;
     height: 20px;
     white-space: nowrap; /* Förhindrar att texten radbryts */
+    cursor: pointer;
+}
+
+th:hover {
+    opacity: 0.8;
 }
 
 td {
@@ -162,6 +158,18 @@ td {
 }
 
 /* Modal-styling */
+/* Overlay (döljer bakgrunden) */
+.overlay {
+    display: none; /* Dold som standard */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Halvtransparent svart */
+    z-index: 999; /* Se till att overlay är över allt annat */
+}
+
 .modal {
     font-size: 14px;
     width: 200px;
@@ -178,6 +186,7 @@ td {
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+    z-index: 1000; /* Modal ligger ovanpå overlay */
 }
 
 .modal-content {
@@ -241,13 +250,23 @@ button:hover {
 }
 
 .weather-info span {
-    font-size: 14px;
+    font-size: 13px;
+    background-color: #f0f0f0; /* Subtil bakgrundsfärg */
+    border-radius: 5px; /* Rundade kanter */
+    display: inline-block; /* Gör så att elementet bara är så stort som texten */
+    width: auto; /* Bredden anpassas efter innehållet */
+    padding: 5px; /* Inre marginal för att ge ett visuellt avstånd */
+}
+
+.weather-info span:hover {
+    background-color: #e9e9e9;  /* Aningen mörkare */
+    cursor: default;
 }
 
 /* ANTECKNINGSRELATERAT */
 #noteInput {
     width: 100%; /* Gör textområdet lika brett som tabellcellen */
-    height: 100px;
+    height: 300px;
     border: none; /* Tar bort kantlinjen */
     text-align: center;  /* Gör så att texten är vänsterjusterad */
     resize: none; /* Förhindrar att användaren ändrar storlek på textområdet */
@@ -255,8 +274,7 @@ button:hover {
 }
 
 textarea:focus {
-    outline: none; /* Tar bort den orange kantlinjen */
-    border: 1px solid #ccc; /* Valfritt: sätt en annan kantlinje om du vill ha en normal kant */
+    outline: none; /* Tar bort den orangea kantlinjen */
 }
 
 /* Modalens innehåll */
@@ -284,8 +302,7 @@ textarea:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
-    /* Viktigt för att kunna placera knappen korrekt */
+    position: relative; /* Viktigt för att kunna placera knappen korrekt */
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
@@ -299,13 +316,13 @@ textarea:focus {
 }
 
 #notes-list li button {
-    padding: 0;
-    /*Tabortpaddingförattfåenexaktstorlek*/cursor: pointer;
+    padding: 0; /* Ta bort padding för att få en exakt storlek */
+    cursor: pointer;
     background-color: #f0f0f0;
-    /*Faststorlekförknappen*/width: 20px;
-    /*Fastbredd*/height: 20px;
-    /*Fasthöjd*/border-radius: 0;
-    /*Ingenrundningpåhörnen*//*Fixeraknappentillhöger*/position: absolute;
+    width: 20px; /* Fast bredd */
+    height: 20px; /* Fast höjd */
+    border-radius: 0; /* Ingen rundning på hörnen */
+    position: absolute; /* Fixera knappen till höger */
     right: 10px;
     color: grey;
     cursor: pointer;
@@ -314,6 +331,7 @@ textarea:focus {
     -ms-border-radius: 0;
     -o-border-radius: 0;
 }
+
 #notes-list li button:hover {
     background-color: #d8d8d8;
 }
