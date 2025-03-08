@@ -304,6 +304,80 @@ button:hover {
     cursor: default;
 }
 
+
+/* RADIORELATERAT */
+.channel-row {
+    display: flex; /* Gör att innehållet placeras horisontellt */
+    align-items: flex-start; /* Justera så att bilden och texten är högst upp */
+    text-align: left;
+    flex-direction: column; /* Gör så att ljudspelaren hamnar på en ny rad */
+}
+
+.channel-info-wrapper {
+    display: flex; /* Gör så att bilden och kanalinfo placeras horisontellt */
+    align-items: center; /* Justera vertikalt så att bild och text är centrerade */
+    gap: 10px; /* Mellanrum mellan bilden och texten */
+}
+
+.channel-info {
+    font-size: 14px;
+}
+
+.channel-img {
+    margin-top: 10px;
+    width: 40px; /* Bildens bredd */
+    height: auto; /* Bevara bildens proportioner */
+    object-fit: cover; /* Fyller ut bilden i utrymmet utan att deformeras */
+    border-radius: 5px;
+}
+
+.channel-info a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.channel-info a:hover {
+    color: inherit;
+}
+
+.channel-info span {
+    font-size: 12px;
+    color: #777;
+    display: inline-block;
+    max-width: 131px;
+    overflow: hidden; /* Döljer överskottsinnehåll */
+    white-space: nowrap; /* Förhindrar radbrytning */
+    text-overflow: ellipsis; /* Visar ... om texten är för lång */
+}
+
+
+.channel-info span:hover {
+    background-color: #e9e9e9;
+    cursor: default;
+}
+
+/* Ljudspelare */
+.audio-wrapper {
+    width: 100%;
+    margin-top: none;
+}
+
+audio {
+    width: 100%;
+    /*Fyllerhelatillgängligabredden*/height: 40px;
+    /*Högrehöjdförljudspelaren*/border-radius: 8px;
+    background-color: #f0f0f0;
+    border: none;
+    padding: 0;
+    display: block;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+
+
 /* ANTECKNINGSRELATERAT */
 #noteInput {
     font-size: 14px;

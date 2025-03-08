@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateClock();
     loadLinks();
     loadNotes();
-    changeBackground();
+    //changeBackground();
 });
 
 
@@ -356,7 +356,125 @@ getUserLocation();
 
 
 
-// TABELL 3:
+// TABELL 3: SVERIGES RADIO
+document.addEventListener("DOMContentLoaded", function() {
+    loadChannels();
+});
+
+async function loadChannels() {
+    const channelsBody = document.querySelector(".table-container table:nth-child(3) tbody");
+    channelsBody.innerHTML = ''; // Rensa tidigare kanalflöde innan ny data läggs till
+
+    let url = 'http://api.sr.se/api/v2/channels';
+
+    try {
+        // Hämta kanaldata
+        const response = await fetch(url);
+        const xmlData = await response.text(); // Hämta svaret som text (XML)
+
+        // Skapa en parser för att omvandla XML-texten till ett DOM-träd
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlData, 'application/xml');
+        
+        // Hämta alla kanaler från XML-svaret
+        const channels = xmlDoc.getElementsByTagName('channel');
+
+        // Lista med tillåtna kanaler (P1, P2, P3)
+        const allowedChannels = ['P1', 'P2', 'P3'];
+
+        // Logga varje kanal för att se vad som finns
+        Array.from(channels).forEach(async channel => {
+            // Hämta data från varje kanal
+            const channelName = channel.getAttribute('name');
+            const channelTagline = channel.getElementsByTagName('tagline')[0]?.textContent || 'Ingen slogan';
+            const channelUrl = channel.getElementsByTagName('siteurl')[0]?.textContent || '#';
+            const channelImageUrl = channel.getElementsByTagName('image')[0]?.textContent || '';
+            const liveAudioUrl = channel.getElementsByTagName('liveaudio')[0]?.getElementsByTagName('url')[0]?.textContent || '#';
+            const scheduleUrl = channel.getElementsByTagName('scheduleurl')[0]?.textContent || '';
+
+            // Filtrera kanaler så att endast P1, P2 och P3 visas
+            if (allowedChannels.includes(channelName)) {
+                // Hämta information om nuvarande program
+                let currentProgram = 'Inget program nu';
+                if (scheduleUrl) {
+                    try {
+                        const programResponse = await fetch(scheduleUrl);
+                        
+                        // Kontrollera om svaret är korrekt (XML)
+                        if (!programResponse.ok) {
+                            console.error("Fel vid hämtning av programdata, status:", programResponse.status);
+                            return;
+                        }
+            
+                        const xmlData = await programResponse.text();
+                        
+                        // Skapa en parser för att omvandla XML-texten till ett DOM-träd
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlData, 'application/xml');
+                        
+                        // Hämta aktuellt program från XML (t.ex. genom att ta första programmet)
+                        const currentProgramData = xmlDoc.getElementsByTagName('program')[0];
+                        console.log(currentProgramData); // Logga för att se strukturen
+                        
+                        if (currentProgramData) {
+                            // Hämta programnamnet från name-attributet
+                            const programName = currentProgramData.getAttribute('name');
+                            if (programName) {
+                                currentProgram = programName || 'Inget program nu';
+                            } else {
+                                console.log("Inget 'name'-attribut i currentProgramData");
+                            }
+                        } else {
+                            console.log("Inget programdata hittades.");
+                        }
+                    } catch (error) {
+                        console.error("Kunde inte hämta programdata", error);
+                    }
+                }
+            
+                // Skapa en ny rad för varje kanal
+                let row = document.createElement("tr");
+            
+                // Lägg till kanaldata i tabellen
+                row.innerHTML = `
+                                <td>
+                                <div class="channel-row">
+                                    <div class="channel-info-wrapper">
+                                        <a href="${channelUrl}" target="_blank">
+                                            <img src="${channelImageUrl}" alt="${channelName}" class="channel-img" width="40">
+                                        </a>
+                                        <div class="channel-info">
+                                            <b><a href="${liveAudioUrl}" target="_blank">${channelName}</a></b><br>
+                                            <span>${currentProgram}</span>
+                                        </div>
+                                    </div>
+                                        
+                                        <di class="audio-wrapper">
+                                        <audio controls>
+                                            <source src="${liveAudioUrl}" type="audio/mpeg">
+                                            Din webbläsare stödjer inte ljuduppspelning.
+                                        </audio>
+                                    </di>
+                                </div>
+                                </td>
+                                `;
+
+                // Lägg till raden i tabellen
+                channelsBody.appendChild(row);
+            }
+            
+        });
+
+    } catch (error) {
+        console.error("Kunde inte hämta kanaler", error);
+    }
+}
+
+
+
+
+
+
 
 
 
