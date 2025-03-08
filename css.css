@@ -356,7 +356,7 @@ textarea:focus {
 
 #notes-list li:active {
     cursor: grabbing;
-    opacity: 0.1;
+    opacity: 0.8;
 }
 
 #notes-list li button {
