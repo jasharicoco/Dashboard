@@ -65,33 +65,34 @@ dashboardTitle.addEventListener("keydown", function(event) {
 
 
 // TABELL 1: SNABBLÄNKAR
-document.getElementById("add-link-button").addEventListener("click", showModal);
+// Lägg till eventlyssnare för öppning och stängning av modalen
+document.getElementById("add-link-button").addEventListener("click", showLinkModal);
 document.getElementById("save-link").addEventListener("click", saveLink);
-document.getElementById("cancel-link").addEventListener("click", closeModal);
+document.getElementById("cancel-link").addEventListener("click", closeLinkModal);
+
 document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
-        closeModal(); // Stänger modalen om Escape trycks
+        closeLinkModal(); // Stänger modalen om Escape trycks
     }
 });
-document.addEventListener('click', function(event) {
-    const modal = document.getElementById('link-modal');
-    const modalContent = document.querySelector('.modal-content');
-    const addLinkButton = document.getElementById('add-link-button'); // Lägg till denna rad
 
-    // Om klicket inte var på modalen eller på innehållet i modalen OCH inte på lägg till länk-knappen, stäng modalen
-    if (!modal.contains(event.target) && !modalContent.contains(event.target) && event.target !== addLinkButton) {
-        closeModal();
+document.addEventListener('click', function(event) {
+    // Om klicket är på overlayen (dvs utanför modalen) - stäng ner modal
+    if (document.getElementById("overlay").contains(event.target)) {
+        closeLinkModal();
     }
 });
 
 const linksContainer = document.querySelector("#links-container td");
 
-function showModal() {
-    document.getElementById("link-modal").style.display = "block";
+function showLinkModal() {
+    document.getElementById("link-modal").classList.add("active");  // Lägg till aktiv klass för att visa modal
+    document.getElementById("overlay").style.display = "block"; // Visa overlay
 }
 
-function closeModal() {
-    document.getElementById("link-modal").style.display = "none";
+function closeLinkModal() {
+    document.getElementById("link-modal").classList.remove("active"); // Ta bort aktiv klass för att dölja modal
+    document.getElementById("overlay").style.display = "none"; // Dölja overlayn
     document.getElementById("link-name").value = "";
     document.getElementById("link-url").value = "";
 }
@@ -107,7 +108,7 @@ function saveLink() {
 
     addLink(name, url);
     saveToLocalStorage(name, url);
-    closeModal();
+    closeLinkModal();
 }
 
 function addLink(name, url) {
@@ -143,7 +144,6 @@ function addLink(name, url) {
     linkItem.appendChild(removeButton);
     linksContainer.appendChild(linkItem);
 }
-
 
 function removeLink(linkElement, name, url) {
     linkElement.remove();
@@ -188,11 +188,47 @@ document.getElementById("link-url").addEventListener("keypress", function(event)
 
 
 
+
 // TABELL 2: VÄDER
+
+function showWeatherModal() {
+    document.getElementById("city-modal").classList.add("active");
+    document.getElementById("overlay").style.display = "block";
+    currentCityElement.innerHTML = "<br>Nuvarande stad:<br><strong>" + currentCity + "</strong><br>";
+}
+
+function closeWeatherModal() {
+    document.getElementById("city-modal").classList.remove("active");
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("new-city").value = "";
+}
+
+// Funktion för att visa modalen när man trycker på de tre punkterna
+document.getElementById("change-city-btn").addEventListener("click", function() {
+    showWeatherModal();
+});
+
+// Funktion för att spara den nya staden och uppdatera vädret
+document.getElementById("save-city").addEventListener("click", function() {
+    const city = newCityInput.value.trim();
+    if (city) {
+        currentCity = city; // Uppdatera den aktuella staden
+        updateCurrentCityDisplay(city); // Uppdatera staden som visas
+        loadWeather(city); // Ladda vädret för den nya staden
+        closeWeatherModal();
+        newCityInput.value = ""; // Töm inmatningsfältet
+    } else {
+        alert("Ange en stad.");
+    }
+});
+
+// Funktion för att stänga modalen när man trycker på "Avbryt"
+document.getElementById("cancel-city").addEventListener("click", function() {
+    closeWeatherModal();
+});
+
 const changeCityButton = document.getElementById("change-city-btn");
 const cityModal = document.getElementById("city-modal");
-const saveCityButton = document.getElementById("save-city");
-const cancelCityButton = document.getElementById("cancel-city");
 const newCityInput = document.getElementById("new-city");
 const currentCityElement = document.getElementById("current-city");
 
@@ -201,47 +237,19 @@ let currentCity = "Stockholm"; // Standardstad
 // Visa den aktuella staden när sidan laddas
 function updateCurrentCityDisplay(city) {
     currentCityElement.innerHTML = "Nuvarande stad:<br><strong>" + city + "</strong>";
-
 }
-
-// Funktion för att visa modalen för att byta stad
-changeCityButton.addEventListener("click", function() {
-    currentCityElement.innerHTML = "<br>Nuvarande stad:<br><strong>" + currentCity + "</strong><br>";
-
-    cityModal.style.display = "block";
-});
-
-// Funktion för att stänga modalen när man trycker på "Avbryt"
-cancelCityButton.addEventListener("click", function() {
-    cityModal.style.display = "none";
-    newCityInput.value = ""; // Töm inmatningsfältet
-});
-
-// Funktion för att spara den nya staden och uppdatera vädret
-saveCityButton.addEventListener("click", function() {
-    const city = newCityInput.value.trim();
-    if (city) {
-        currentCity = city; // Uppdatera den aktuella staden
-        updateCurrentCityDisplay(city); // Uppdatera staden som visas
-        loadWeather(city); // Ladda vädret för den nya staden
-        cityModal.style.display = "none"; // Stäng modalen
-        newCityInput.value = ""; // Töm inmatningsfältet
-    } else {
-        alert("Ange en stad.");
-    }
-});
 
 // Funktion för att stänga modal om användaren trycker på Escape-tangenten
 document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
-        cityModal.style.display = "none"; // Stäng modalen om Escape trycks
+        closeWeatherModal();
     }
 });
 
 // Funktion för att stänga modal om användaren klickar utanför modalen
 window.addEventListener("click", function(event) {
-    if (!cityModal.contains(event.target) && event.target !== changeCityButton) {
-        cityModal.style.display = "none"; // Stäng modalen om användaren klickar utanför den
+    if (document.getElementById("overlay").contains(event.target)) {
+        closeWeatherModal();
     }
 });
 
@@ -354,14 +362,15 @@ getUserLocation();
 
 // TABELL 4: ANTECKNINGAR
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("change-notes-btn").addEventListener("click", openNotesModal);
-    document.getElementById("close-notes-modal").addEventListener("click", closeNotesModal);
-    document.getElementById("noteInput").addEventListener("keydown", saveNote);
     loadNotes();
 });
 
+
+document.getElementById("change-notes-btn").addEventListener("click", openNotesModal);
+document.getElementById("close-notes-modal").addEventListener("click", closeNotesModal);
+document.getElementById("noteInput").addEventListener("keydown", saveNote);
+
 function openNotesModal() {
-    const modal = document.getElementById("notes-modal");
     const notesList = document.getElementById("notes-list");
     notesList.innerHTML = '';
 
@@ -382,11 +391,13 @@ function openNotesModal() {
         notesList.appendChild(listItem);
     });
 
-    modal.style.display = "block";
+    document.getElementById("notes-modal").classList.add("active");
+    document.getElementById("overlay").style.display = "block";
 }
 
 function closeNotesModal() {
-    document.getElementById("notes-modal").style.display = "none";
+    document.getElementById("notes-modal").classList.remove("active");
+    document.getElementById("overlay").style.display = "none";
 }
 
 function removeNote(index) {
@@ -439,6 +450,12 @@ function loadNotes() {
 
 window.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
+        closeNotesModal();
+    }
+});
+
+document.addEventListener('click', function(event) {
+    if (document.getElementById("overlay").contains(event.target)) {
         closeNotesModal();
     }
 });
