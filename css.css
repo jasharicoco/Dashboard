@@ -19,6 +19,21 @@ body {
     height: 100%; /* Säkerställer att bakgrunden täcker hela sidan */
 }
 
+button {
+    -webkit-tap-highlight-color: transparent; /* Tar bort blåa effekten */
+    outline: none; /* Tar bort fokus-kant */
+    user-select: none; /* Förhindrar textmarkering */
+    -webkit-user-select: none; 
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+button:active {
+    background-color: transparent; /* Tar bort eventuell bakgrundsfärg vid tryck */
+    box-shadow: none; /* Tar bort eventuell skugga */
+    outline: none;
+}
+
 strong {
     display: block;
 }
@@ -99,10 +114,18 @@ th {
     height: 20px;
     white-space: nowrap; /* Förhindrar att texten radbryts */
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent; /* Tar bort touch-effekten */
+    outline: none; /* Tar bort eventuell kant */
 }
 
 th:hover {
     opacity: 0.8;
+}
+
+th:active,
+th:focus {
+    background-color: transparent !important; /* Förhindrar bakgrundsförändring */
+    box-shadow: none !important; /* Tar bort eventuell skugga */
 }
 
 td {
@@ -320,6 +343,7 @@ textarea:focus {
     margin: 10px 0;
     padding: 10px;
     border-radius: 8px;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -330,10 +354,9 @@ textarea:focus {
     -o-border-radius: 8px;
 }
 
-#notes-list li .note-text {
-    flex-grow: 1;           /* Gör att texten tar upp så mycket plats som möjligt utan att överskrida */
-    word-wrap: break-word;  /* Gör så att långa ord bryts för att passa inom gränsen */
-    margin-right: 10px;     /* Lägger till lite avstånd mellan texten och knappen */
+#notes-list li:active {
+    cursor: grabbing;
+    opacity: 0.1;
 }
 
 #notes-list li button {
@@ -356,6 +379,12 @@ textarea:focus {
 #notes-list li button:hover {
     background-color: #d8d8d8;
 }
+
+.strikethrough {
+    text-decoration: line-through;
+    color: gray; /* Valfritt: gör texten ljusare för bättre effekt */
+}
+
 
 /* BAKGRUNDSBILDS-KNAPP */
 .bottom-button {

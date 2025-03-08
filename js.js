@@ -379,11 +379,23 @@ function openNotesModal() {
     savedNotes.forEach((note, index) => {
         let listItem = document.createElement("li");
         listItem.textContent = note;
-        
+        listItem.draggable = true; // Gör listan draggable
+        listItem.dataset.index = index; // Spara original index
+
+        // Lägg till drag events
+        listItem.addEventListener("dragstart", handleDragStart);
+        listItem.addEventListener("dragover", handleDragOver);
+        listItem.addEventListener("drop", handleDrop);
+
+        // Lägg till klickhändelse för att stryka över texten
+        listItem.addEventListener("click", function () {
+            this.classList.toggle("strikethrough");
+        });
+
         let deleteButton = document.createElement("button");
         deleteButton.textContent = "x";
         deleteButton.classList.add("delete-note");
-        deleteButton.onclick = function() {
+        deleteButton.onclick = function () {
             removeNote(index);
         };
 
@@ -459,6 +471,54 @@ document.addEventListener('click', function(event) {
         closeNotesModal();
     }
 });
+
+// Stryk anteckningar utan att radera dem
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("#notes-list li").forEach(function (item) {
+        item.addEventListener("click", function () {
+            this.classList.toggle("strikethrough");
+        });
+    });
+});
+
+// DRAG AND DROP LIST ITEMS
+let draggedItem = null;
+
+function handleDragStart(event) {
+    draggedItem = this; // Spara det element som dras
+    event.dataTransfer.effectAllowed = "move";
+}
+
+function handleDragOver(event) {
+    event.preventDefault(); // Gör det möjligt att släppa elementet här
+    event.dataTransfer.dropEffect = "move";
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+
+    if (draggedItem !== this) {
+        let parent = this.parentNode;
+        let items = Array.from(parent.children);
+        let draggedIndex = items.indexOf(draggedItem);
+        let targetIndex = items.indexOf(this);
+
+        // Byt plats i DOM
+        if (draggedIndex < targetIndex) {
+            parent.insertBefore(draggedItem, this.nextSibling);
+        } else {
+            parent.insertBefore(draggedItem, this);
+        }
+
+        // Uppdatera LocalStorage med ny ordning
+        let notes = JSON.parse(localStorage.getItem("notes")) || [];
+        let draggedText = notes[draggedIndex];
+
+        notes.splice(draggedIndex, 1);
+        notes.splice(targetIndex, 0, draggedText);
+        localStorage.setItem("notes", JSON.stringify(notes));
+    }
+}
 
 
 
