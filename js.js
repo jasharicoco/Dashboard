@@ -206,7 +206,8 @@ function updateCurrentCityDisplay(city) {
 
 // Funktion för att visa modalen för att byta stad
 changeCityButton.addEventListener("click", function() {
-    currentCityElement.innerHTML = "Nuvarande stad:<br><strong>" + currentCity + "</strong>";
+    currentCityElement.innerHTML = "<br>Nuvarande stad:<br><strong>" + currentCity + "</strong><br>";
+
     cityModal.style.display = "block";
 });
 

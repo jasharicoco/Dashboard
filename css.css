@@ -19,6 +19,10 @@ body {
     height: 100%; /* Säkerställer att bakgrunden täcker hela sidan */
 }
 
+strong {
+    display: block;
+}
+
 /* KLOCKRELATERAT */
 #clock {
     position: fixed;
@@ -197,6 +201,11 @@ td {
 .modal-content h3 {
     margin-top: 0; /* Tar bort eventuell standardmarginal över rubriken */
     padding-top: 0;
+}
+
+.modal-content > * {
+    margin: 0; /* Remove margin from all direct children inside .modal-content */
+    padding: 0; /* Remove padding from all direct children inside .modal-content */
 }
 
 .modal-content label {
