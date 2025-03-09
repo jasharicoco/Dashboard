@@ -71,8 +71,14 @@ document.getElementById("save-link").addEventListener("click", saveLink);
 document.getElementById("cancel-link").addEventListener("click", closeLinkModal);
 
 document.addEventListener("keydown", function(event) {
+    // Om användaren trycker på Escape, stäng modalen
     if (event.key === "Escape") {
-        closeLinkModal(); // Stänger modalen om Escape trycks
+        closeLinkModal();
+    }
+    
+    // Om användaren trycker på Enter, spara länken
+    if (event.key === "Enter") {
+        saveLink(); // Anropa saveLink-funktionen när Enter trycks
     }
 });
 
@@ -147,7 +153,7 @@ function addLink(name, url, iconUrl = null) {
     // Använd den URL som användaren angav, annars använd en standardikon
     linkIcon.src = iconUrl || `https://www.google.com/s2/favicons?domain=${url}`;
     linkIcon.onerror = function() {
-        linkIcon.src = './default-icon.png'; // Standardikon om den angivna ikonen inte kan hämtas
+        linkIcon.src = './favicon.ico'; // Standardikon om den angivna ikonen inte kan hämtas
     };
 
     const linkName = document.createElement("a");
@@ -222,10 +228,6 @@ function handleDragEnd(event) {
 function removeLink(linkElement, name, url) {
     linkElement.remove();
     removeFromLocalStorage(name, url);
-
-    if (linksContainer.children.length === 0) {
-        linksContainer.textContent = "Data";
-    }
 }
 
 function saveToLocalStorage(name, url, iconUrl) {
