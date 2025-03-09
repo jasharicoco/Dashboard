@@ -78,7 +78,10 @@ document.addEventListener("keydown", function(event) {
     
     // Om användaren trycker på Enter, spara länken
     if (event.key === "Enter") {
-        saveLink(); // Anropa saveLink-funktionen när Enter trycks
+        const linkModal = document.getElementById("link-modal");
+        if (linkModal.classList.contains("active")) {
+            saveLink();
+        }
     }
 });
 
