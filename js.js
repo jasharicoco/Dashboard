@@ -96,11 +96,13 @@ function closeLinkModal() {
     document.getElementById("overlay").style.display = "none"; // Dölja overlayn
     document.getElementById("link-name").value = "";
     document.getElementById("link-url").value = "";
+    document.getElementById("link-icon-url").value = "";
 }
 
 function saveLink() {
     const name = document.getElementById("link-name").value.trim();
     const url = document.getElementById("link-url").value.trim();
+    const iconUrl = document.getElementById("link-icon-url").value.trim(); // Hämta URL från det nya inputfältet
 
     if (!name || !url) {
         alert("Fyll i både Namn och URL");
@@ -109,28 +111,32 @@ function saveLink() {
 
     if (currentLinkItem) {
         // Om vi har en länk att uppdatera
-        updateLink(currentLinkItem, name, url);
+        updateLink(currentLinkItem, name, url, iconUrl);
     } else {
         // Annars lägg till en ny länk
-        addLink(name, url);
+        addLink(name, url, iconUrl);
     }
-    saveToLocalStorage(name, url);
+    saveToLocalStorage(name, url, iconUrl);
     closeLinkModal();
+
+    // Rensa fälten när vi har sparat länken
+    document.getElementById("link-name").value = ""; // Rensa namn-fältet
+    document.getElementById("link-url").value = "";  // Rensa URL-fältet
+    document.getElementById("link-icon-url").value = ""; // Rensa ikon-URL-fältet
 }
 
 let currentLinkItem = null; // Håller reda på vilken länk som redigeras
 
 // Funktion för att lägga till en länk
-function addLink(name, url) {
+function addLink(name, url, iconUrl = null) {
     if (linksContainer.textContent.trim() === "Data") {
         linksContainer.textContent = "";
     }
 
     const linkItem = document.createElement("div");
     linkItem.classList.add("link-item");
-    linkItem.setAttribute("draggable", "true"); // Gör länkbar dragbar
+    linkItem.setAttribute("draggable", "true");
 
-    // Lägg till eventlyssnare för drag-and-drop
     linkItem.addEventListener("dragstart", handleDragStart);
     linkItem.addEventListener("dragover", handleDragOver);
     linkItem.addEventListener("drop", handleDrop);
@@ -138,9 +144,10 @@ function addLink(name, url) {
 
     const linkIcon = document.createElement("img");
     linkIcon.classList.add("link-icon");
-    linkIcon.src = `https://www.google.com/s2/favicons?domain=${url}`; // Dynamisk ikon från URL
+    // Använd den URL som användaren angav, annars använd en standardikon
+    linkIcon.src = iconUrl || `https://www.google.com/s2/favicons?domain=${url}`;
     linkIcon.onerror = function() {
-        linkIcon.src = './default-icon.png'; // Standardikon om den dynamiska ikonen inte kan hämtas
+        linkIcon.src = './default-icon.png'; // Standardikon om den angivna ikonen inte kan hämtas
     };
 
     const linkName = document.createElement("a");
@@ -156,23 +163,34 @@ function addLink(name, url) {
         removeLink(linkItem, name, url);
     };
 
-    // Lägg till en eventlyssnare för högerklick (kontextmeny)
-    linkItem.addEventListener("contextmenu", function(event) {
-        event.preventDefault();
-        currentLinkItem = linkItem; // Sätt den aktuella länkobjektet
-        showLinkModal();
-        document.getElementById("link-name").value = name; // Fyll i namn i modal
-        document.getElementById("link-url").value = url;  // Fyll i URL i modal
-    });
-
     linkItem.appendChild(linkIcon);
     linkItem.appendChild(linkName);
     linkItem.appendChild(removeButton);
     linksContainer.appendChild(linkItem);
+
+    // Lägg till eventlyssnare för högerklick
+    linkItem.addEventListener("contextmenu", function(event) {
+        event.preventDefault(); // Förhindrar standard högerklickmeny
+
+        // Fyll modalens fält med länkens nuvarande värden
+        const name = linkItem.querySelector(".link-name").textContent;
+        const url = linkItem.querySelector(".link-name").href;
+        const iconUrl = linkItem.querySelector(".link-icon").src;
+
+        // Sätt värdena i modalens inputfält
+        document.getElementById("link-name").value = name;
+        document.getElementById("link-url").value = url;
+        document.getElementById("link-icon-url").value = iconUrl;
+
+        // Sätt currentLinkItem till den länk som redigeras
+        currentLinkItem = linkItem;
+
+        // Visa modalen
+        showLinkModal();
+    });
 }
 
 function handleDragStart(event) {
-    // Sätt data om länken som dras
     event.dataTransfer.setData("text/plain", event.target.innerHTML);
     event.target.classList.add("dragging");
 }
@@ -210,9 +228,9 @@ function removeLink(linkElement, name, url) {
     }
 }
 
-function saveToLocalStorage(name, url) {
+function saveToLocalStorage(name, url, iconUrl) {
     let links = JSON.parse(localStorage.getItem("quickLinks")) || [];
-    links.push({ name, url });
+    links.push({ name, url, iconUrl });
     localStorage.setItem("quickLinks", JSON.stringify(links));
 }
 
@@ -224,7 +242,7 @@ function removeFromLocalStorage(name, url) {
 
 function loadLinks() {
     let links = JSON.parse(localStorage.getItem("quickLinks")) || [];
-    links.forEach(link => addLink(link.name, link.url));
+    links.forEach(link => addLink(link.name, link.url, link.iconUrl));
 }
 
 function updateLinksOrder() {
@@ -239,21 +257,25 @@ function updateLinksOrder() {
 }
 
 // Funktion för att uppdatera en länk
-function updateLink(linkItem, newName, newUrl) {
+function updateLink(linkItem, newName, newUrl, newIconUrl) {
     linkItem.querySelector(".link-name").textContent = newName;
     linkItem.querySelector(".link-name").href = newUrl;
+    const linkIcon = linkItem.querySelector(".link-icon");
+    linkIcon.src = newIconUrl || `https://www.google.com/s2/favicons?domain=${newUrl}`;
 
-    // Uppdatera länken i localStorage
-    updateLinkInLocalStorage(linkItem.querySelector(".link-name").textContent, linkItem.querySelector(".link-name").href, newName, newUrl);
+    // Uppdatera informationen i localStorage
+    updateLinkInLocalStorage(linkItem.querySelector(".link-name").textContent, 
+                            linkItem.querySelector(".link-name").href, 
+                            newName, newUrl, newIconUrl);
 }
 
-function updateLinkInLocalStorage(oldName, oldUrl, newName, newUrl) {
+function updateLinkInLocalStorage(oldName, oldUrl, newName, newUrl, newIconUrl) {
     let links = JSON.parse(localStorage.getItem("quickLinks")) || [];
-    // Uppdatera den gamla länken med de nya värdena
     const link = links.find(link => link.name === oldName && link.url === oldUrl);
     if (link) {
         link.name = newName;
         link.url = newUrl;
+        link.iconUrl = newIconUrl;
         localStorage.setItem("quickLinks", JSON.stringify(links));
     }
 }
@@ -262,7 +284,6 @@ function updateLinkInLocalStorage(oldName, oldUrl, newName, newUrl) {
 
 
 // TABELL 2: VÄDER
-
 function showWeatherModal() {
     document.getElementById("city-modal").classList.add("active");
     document.getElementById("overlay").style.display = "block";
