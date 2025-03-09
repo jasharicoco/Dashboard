@@ -458,7 +458,7 @@ async function loadChannels() {
     const channelsBody = document.querySelector(".table-container table:nth-child(3) tbody");
     channelsBody.innerHTML = ''; // Rensa tidigare kanalflöde innan ny data läggs till
 
-    let url = 'http://api.sr.se/api/v2/channels';
+    let url = 'https://api.sr.se/api/v2/channels';
 
     try {
         // Hämta kanaldata
