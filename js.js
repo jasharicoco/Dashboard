@@ -30,7 +30,7 @@ window.addEventListener("scroll", function () {
     } else {
         clock.style.opacity = "0.8";
     }
-});
+}, { passive: true });
 
 
 
@@ -79,6 +79,7 @@ document.addEventListener("keydown", function(event) {
     // Om användaren trycker på Enter, spara länken
     if (event.key === "Enter") {
         const linkModal = document.getElementById("link-modal");
+        // Appliceras endast om linkmodalen är aktiv
         if (linkModal.classList.contains("active")) {
             saveLink();
         }
@@ -111,8 +112,9 @@ function closeLinkModal() {
 function saveLink() {
     const name = document.getElementById("link-name").value.trim();
     const url = document.getElementById("link-url").value.trim();
-    const iconUrl = document.getElementById("link-icon-url").value.trim(); // Hämta URL från det nya inputfältet
+    const iconUrl = document.getElementById("link-icon-url").value.trim();
 
+    // Fyll i både namn och URL för att kunna spara
     if (!name || !url) {
         alert("Fyll i både Namn och URL");
         return;
@@ -772,7 +774,7 @@ let isAtBottom = window.innerHeight + window.scrollY >= document.documentElement
     } else {
         button.style.opacity = "0.3";
     }
-});
+}, { passive: true });
 
 
 
