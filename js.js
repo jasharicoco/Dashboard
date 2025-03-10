@@ -512,7 +512,6 @@ async function loadChannels() {
                         
                         // Hämta aktuellt program från XML (t.ex. genom att ta första programmet)
                         const currentProgramData = xmlDoc.getElementsByTagName('program')[0];
-                        console.log(currentProgramData); // Logga för att se strukturen
                         
                         if (currentProgramData) {
                             // Hämta programnamnet från name-attributet
@@ -535,25 +534,25 @@ async function loadChannels() {
             
                 // Lägg till kanaldata i tabellen
                 row.innerHTML = `
-                                <td>
-                                <div class="channel-row">
-                                    <div class="channel-info-wrapper">
-                                            <img src="${channelImageUrl}" alt="${channelName}" class="channel-img" width="40">
-                                        <div class="channel-info">
-                                            <b><a href="${liveAudioUrl}" target="_blank">${channelName}</a></b><br>
-                                            <span>${currentProgram}</span>
-                                        </div>
-                                    </div>
-                                        
-                                        <di class="audio-wrapper">
-                                        <audio controls>
-                                            <source src="${liveAudioUrl}" type="audio/mpeg">
-                                            Din webbläsare stödjer inte ljuduppspelning.
-                                        </audio>
-                                    </di>
-                                </div>
-                                </td>
-                                `;
+                    <td>
+                    <div class="channel-row">
+                        <div class="channel-info-wrapper">
+                                <img src="${channelImageUrl}" alt="${channelName}" class="channel-img" width="40">
+                            <div class="channel-info">
+                                <b><a href="${liveAudioUrl}" target="_blank">${channelName}</a></b><br>
+                                <span>${currentProgram}</span>
+                            </div>
+                        </div>
+                            
+                            <div class="audio-wrapper">
+                            <audio controls>
+                                <source src="${liveAudioUrl}" type="audio/mpeg">
+                                Din webbläsare stödjer inte ljuduppspelning.
+                            </audio>
+                        </div>
+                    </div>
+                    </td>
+                `;
 
                 // Lägg till raden i tabellen
                 channelsBody.appendChild(row);
@@ -565,6 +564,7 @@ async function loadChannels() {
         console.error("Kunde inte hämta kanaler", error);
     }
 }
+
 
 
 
