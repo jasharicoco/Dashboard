@@ -437,7 +437,6 @@ async function loadWeather(latOrCity, lon = null) {
                 alert("Ett oväntat fel inträffade. Försök igen senare.");
                 return;
             }
-            throw new Error(`HTTP-fel: ${response.status}`);
         }
 
         // Om responsen är OK, fortsätt med att hämta JSON-data
