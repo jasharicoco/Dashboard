@@ -99,6 +99,7 @@ const linksContainer = document.querySelector("#links-container td");
 function showLinkModal() {
     document.getElementById("link-modal").classList.add("active");  // Lägg till aktiv klass för att visa modal
     document.getElementById("overlay").style.display = "block"; // Visa overlay
+    document.getElementById("link-name").focus();
 }
 
 function closeLinkModal() {
@@ -289,26 +290,40 @@ function updateLinkInLocalStorage(oldName, oldUrl, newName, newUrl, newIconUrl) 
 
 
 
-
 // TABELL 2: VÄDER
+const changeCityButton = document.getElementById("change-city-btn");
+const cityModal = document.getElementById("city-modal");
+const newCityInput = document.getElementById("new-city");
+const currentCityElement = document.getElementById("current-city");
+
+let currentCity = "Stockholm"; // Standardstad
+
+// Visa den aktuella staden när sidan laddas
+function updateCurrentCityDisplay(city) {
+    currentCityElement.innerHTML = "Nuvarande stad:<br><strong>" + city + "</strong>";
+}
+
+// Funktion för att visa modalen
 function showWeatherModal() {
     document.getElementById("city-modal").classList.add("active");
     document.getElementById("overlay").style.display = "block";
+    newCityInput.focus();
     currentCityElement.innerHTML = "<br>Nuvarande stad:<br><strong>" + currentCity + "</strong><br>";
 }
 
+// Funktion för att stänga modalen
 function closeWeatherModal() {
     document.getElementById("city-modal").classList.remove("active");
     document.getElementById("overlay").style.display = "none";
     document.getElementById("new-city").value = "";
 }
 
-// Funktion för att visa modalen när man trycker på de tre punkterna
+// Event: Funktion för att visa modalen när man trycker på de tre punkterna
 document.getElementById("change-city-btn").addEventListener("click", function() {
     showWeatherModal();
 });
 
-// Funktion för att spara den nya staden och uppdatera vädret
+// Event: Funktion för att spara den nya staden och uppdatera vädret
 document.getElementById("save-city").addEventListener("click", function() {
     const city = newCityInput.value.trim();
     if (city) {
@@ -322,34 +337,35 @@ document.getElementById("save-city").addEventListener("click", function() {
     }
 });
 
-// Funktion för att stänga modalen när man trycker på "Avbryt"
+// Event: Funktion för att stänga modalen när man trycker på "Avbryt"
 document.getElementById("cancel-city").addEventListener("click", function() {
     closeWeatherModal();
 });
 
-const changeCityButton = document.getElementById("change-city-btn");
-const cityModal = document.getElementById("city-modal");
-const newCityInput = document.getElementById("new-city");
-const currentCityElement = document.getElementById("current-city");
-
-let currentCity = "Stockholm"; // Standardstad
-
-// Visa den aktuella staden när sidan laddas
-function updateCurrentCityDisplay(city) {
-    currentCityElement.innerHTML = "Nuvarande stad:<br><strong>" + city + "</strong>";
-}
-
-// Funktion för att stänga modal om användaren trycker på Escape-tangenten
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Escape") {
+// Event: Funktion för att stänga modal om användaren klickar utanför modalen
+window.addEventListener("click", function(event) {
+    if (document.getElementById("overlay").contains(event.target)) {
         closeWeatherModal();
     }
 });
 
-// Funktion för att stänga modal om användaren klickar utanför modalen
-window.addEventListener("click", function(event) {
-    if (document.getElementById("overlay").contains(event.target)) {
+// Event: Funktion för att stänga modal om användaren trycker på Escape-tangenten
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
         closeWeatherModal();
+    }
+    if (event.key === "Enter") {
+        // För att spara den nya staden när Enter trycks
+        const city = newCityInput.value.trim();
+        if (city) {
+            currentCity = city; // Uppdatera den aktuella staden
+            updateCurrentCityDisplay(city); // Uppdatera staden som visas
+            loadWeather(city); // Ladda vädret för den nya staden
+            closeWeatherModal();
+            newCityInput.value = ""; // Töm inmatningsfältet
+        } else {
+            alert("Ange en stad.");
+        }
     }
 });
 
@@ -408,8 +424,23 @@ async function loadWeather(latOrCity, lon = null) {
     }
 
     try {
-        // Hämta väderdata
+        // Ladda väderdata
         let response = await fetch(url);
+
+        // Kolla om responsen är OK (statuskod 200-299)
+        if (!response.ok) {
+            // Om statuskoden är 404, dvs staden hittades inte
+            if (response.status === 404) {
+                alert("Staden hittades inte. Kontrollera stavningen och försök igen.");
+                return;
+            } else {
+                alert("Ett oväntat fel inträffade. Försök igen senare.");
+                return;
+            }
+            throw new Error(`HTTP-fel: ${response.status}`);
+        }
+
+        // Om responsen är OK, fortsätt med att hämta JSON-data
         let data = await response.json();
 
         // Veckodagsnamn på svenska
@@ -447,12 +478,16 @@ async function loadWeather(latOrCity, lon = null) {
             weatherTableBody.appendChild(row);
         }
     } catch (error) {
+        // Hantera andra typer av fel (t.ex. nätverksfel)
         console.error("Kunde inte hämta vädret", error);
+        alert("Kunde inte hämta väderinformation. Försök igen senare.");
     }
 }
 
+
 // När sidan laddas, försök hämta vädret för användarens nuvarande position eller använd standardstad
 getUserLocation();
+
 
 
 
