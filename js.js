@@ -323,19 +323,6 @@ document.getElementById("change-city-btn").addEventListener("click", function() 
     showWeatherModal();
 });
 
-// Event: Funktion för att spara den nya staden och uppdatera vädret
-document.getElementById("save-city").addEventListener("click", function() {
-    const city = newCityInput.value.trim();
-    if (city) {
-        currentCity = city; // Uppdatera den aktuella staden
-        updateCurrentCityDisplay(city); // Uppdatera staden som visas
-        loadWeather(city); // Ladda vädret för den nya staden
-        closeWeatherModal();
-        newCityInput.value = ""; // Töm inmatningsfältet
-    } else {
-        alert("Ange en stad.");
-    }
-});
 
 // Event: Funktion för att stänga modalen när man trycker på "Avbryt"
 document.getElementById("cancel-city").addEventListener("click", function() {
@@ -354,7 +341,10 @@ document.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
         closeWeatherModal();
     }
-    if (event.key === "Enter") {
+
+    const cityModal = document.getElementById("city-modal")
+    
+    if (event.key === "Enter" && cityModal.classList.contains("active")) { // Kontrollera om modalen är aktiv
         // För att spara den nya staden när Enter trycks
         const city = newCityInput.value.trim();
         if (city) {
@@ -368,6 +358,7 @@ document.addEventListener("keydown", function(event) {
         }
     }
 });
+
 
 // Funktion för att hämta användarens nuvarande plats
 function getUserLocation() {
