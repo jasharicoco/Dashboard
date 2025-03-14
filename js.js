@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     updateClock();
     loadLinks();
     loadNotes();
-    changeBackground();
 });
 
 
@@ -770,7 +769,7 @@ async function changeBackground() {
 
         const data = await response.json();
         
-        // ✅ Välj en slumpmässig bild från samlingen
+        // Välj en slumpmässig bild från samlingen
         const randomImage = data[Math.floor(Math.random() * data.length)];
 
         if (!randomImage || !randomImage.urls) {
@@ -787,8 +786,9 @@ async function changeBackground() {
         console.error('Fel vid hämtning av bakgrundsbild:', error);
     }
 }
+changeBackground();
 
-// Ändra opacity till 0.3 så länge man ej är längst ner på sidan
+// Ändra opacity på knappen till 0.3 så länge man ej är längst ner på sidan
 window.addEventListener("scroll", function () {
     let button = document.querySelector(".bottom-button");
 
