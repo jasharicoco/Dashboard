@@ -460,7 +460,7 @@ async function loadWeather(latOrCity, lon = null) {
                         <img src="${icon}" alt="väder">
                         <div class="weather-info">
                             <b>${days[i]}</b>
-                            <span>${weather.main.temp} °C</span>
+                            <span>${Math.round(weather.main.temp)} °C</span>
                         </div>
                     </div>
                 </td>
