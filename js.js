@@ -328,6 +328,20 @@ document.getElementById("cancel-city").addEventListener("click", function() {
     closeWeatherModal();
 });
 
+// Event: Funktion för att stänga modalen när man trycker på "Spara"
+document.getElementById("save-city").addEventListener("click", function() {
+        const city = newCityInput.value.trim();
+        if (city) {
+            currentCity = city; // Uppdatera den aktuella staden
+            updateCurrentCityDisplay(city); // Uppdatera staden som visas
+            loadWeather(city); // Ladda vädret för den nya staden
+            closeWeatherModal();
+            newCityInput.value = ""; // Töm inmatningsfältet
+        } else {
+            alert("Ange en stad.");
+        }
+});
+
 // Event: Funktion för att stänga modal om användaren klickar utanför modalen
 window.addEventListener("click", function(event) {
     if (document.getElementById("overlay").contains(event.target)) {
