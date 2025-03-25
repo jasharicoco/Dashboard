@@ -91,7 +91,7 @@ th[draggable="true"]:active {
 table {
     border-collapse: collapse;
     border-spacing: 0;
-    width: 200px;
+    width: 250px;
     background: rgb(255, 255, 255);
     opacity: 0.8;
     border-radius: 10px;
