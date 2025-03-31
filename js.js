@@ -114,6 +114,11 @@ function saveLink() {
     const url = document.getElementById("link-url").value.trim();
     const iconUrl = document.getElementById("link-icon-url").value.trim();
 
+    // Kontrollera om URL:en börjar med http:// eller https://, annars lägg till https://
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+    }
+    
     // Fyll i både namn och URL för att kunna spara
     if (!name || !url) {
         alert("Fyll i både Namn och URL");
